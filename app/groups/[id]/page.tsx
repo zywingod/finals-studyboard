@@ -6,6 +6,7 @@ import DeleteGroupButton from "@/components/DeleteGroupButton";
 import NewTaskForm from "@/components/NewTaskForm";
 import TaskItem from "@/components/TaskItem";
 import BookSearch from "@/components/BookSearch";
+import AISubtaskSuggester from "@/components/AISubtaskSuggester";
 
 export default async function GroupDetailPage({
   params,
@@ -67,6 +68,11 @@ export default async function GroupDetailPage({
       <div className="mt-3">
         <BookSearch initialQuery={group.subject} />
       </div>
+      {isOwner && (
+        <div className="mt-4">
+          <AISubtaskSuggester groupId={group.id} />
+        </div>
+      )}
     </div>
   );
 }

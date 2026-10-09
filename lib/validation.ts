@@ -14,12 +14,15 @@ export const createGroupSchema = z.object({
 
 export const updateGroupSchema = createGroupSchema.partial();
 
-
 export const createTaskSchema = z.object({
-    title: z.string().trim().min(1, "Title is required").max(200),
+  title: z.string().trim().min(1, "Title is required").max(200),
 });
 
-export const updateTaskSchema = z.object({
-    title: z.string().trim().min(1, "Title is required").max(200),
+export const updateTaskSchema = z
+  .object({
+    title: z.string().trim().min(1, "Title is required").max(200).optional(),
     done: z.boolean().optional(),
-})
+  })
+  .refine((data) => data.title !== undefined || data.done !== undefined, {
+    message: "Nothing to update",
+  });

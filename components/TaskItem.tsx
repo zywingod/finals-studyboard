@@ -35,7 +35,9 @@ export default function TaskItem({
 
     if (!res.ok) {
       setDone(previous);
-      setError("Failed to update task.");
+      const isJson = res.headers.get("content-type")?.includes("application/json");
+      const data = isJson ? await res.json() : null;
+      setError(data?.error ?? `Failed to update task (status ${res.status}).`);
     }
   }
 
@@ -50,7 +52,9 @@ export default function TaskItem({
     });
 
     if (!res.ok) {
-      setError("Failed to delete task.");
+      const isJson = res.headers.get("content-type")?.includes("application/json");
+      const data = isJson ? await res.json() : null;
+      setError(data?.error ?? `Failed to delete task (status ${res.status}).`);
       setIsDeleting(false);
       return;
     }
