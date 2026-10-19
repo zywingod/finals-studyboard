@@ -1,7 +1,9 @@
 "use client";
 
+import { socket } from "@/lib/socketClient";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
+import { set } from "zod";
 
 export default function AISubtaskSuggester({ groupId }: { groupId: string }) {
     const router = useRouter();
@@ -17,10 +19,14 @@ export default function AISubtaskSuggester({ groupId }: { groupId: string }) {
         setError("");
         setIsGenerating(true);
         setSuggestions([]);
+        setChecked(new Set());
 
         const response = await fetch(`/api/groups/${groupId}/tasks/suggest`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: { 
+              "Content-Type": "application/json",
+              "X-Socket-Id": socket.id ?? "",
+            },
             body: JSON.stringify({ topic }),
         });
 
@@ -58,7 +64,10 @@ export default function AISubtaskSuggester({ groupId }: { groupId: string }) {
             selected.map((title) =>
                 fetch(`/api/groups/${groupId}/tasks`, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { 
+                      "Content-Type": "application/json",
+                      "X-Socket-Id": socket.id ?? "",
+                    },
                     body: JSON.stringify({title}),
                 })
             )
