@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import { useRouter } from "next/navigation";
-import Button from "@/components/Button";
+import { useRouter } from 'next/navigation';
+import Button from "./Button";
+import { socket } from "@/lib/socketClient";
 
 export default function NewTaskForm({ groupId }: { groupId: string }) {
   const router = useRouter();
@@ -17,7 +18,10 @@ export default function NewTaskForm({ groupId }: { groupId: string }) {
 
     const res = await fetch(`/api/groups/${groupId}/tasks`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "X-Socket-Id": socket.id ?? "",
+      },
       body: JSON.stringify({ title }),
     });
 

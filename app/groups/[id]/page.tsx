@@ -7,6 +7,7 @@ import NewTaskForm from "@/components/NewTaskForm";
 import TaskItem from "@/components/TaskItem";
 import BookSearch from "@/components/BookSearch";
 import AISubtaskSuggester from "@/components/AISubtaskSuggester";
+import RealtimeNotifications from "@/components/RealtimeNotifications";
 
 export default async function GroupDetailPage({
   params,
@@ -40,6 +41,7 @@ export default async function GroupDetailPage({
       <div className="mt-8 flex items-center justify-between">
         <h2 className="text-lg font-semibold">Tasks</h2>
       </div>
+
       <ul className="mt-3 flex flex-col gap-2">
         {group.tasks.map((task) => (
           <TaskItem
@@ -73,6 +75,7 @@ export default async function GroupDetailPage({
           <AISubtaskSuggester groupId={group.id} />
         </div>
       )}
+      <RealtimeNotifications groupId={group.id} />
     </div>
   );
 }

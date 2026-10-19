@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Task } from "@/lib/data";
+import { socket } from "@/lib/socketClient";
 
 export default function TaskItem({
   task,
@@ -29,7 +30,10 @@ export default function TaskItem({
 
     const res = await fetch(`/api/groups/${groupId}/tasks/${task.id}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        "X-Socket-Id": socket.id ?? "",
+      },
       body: JSON.stringify({ done: next }),
     });
 
@@ -49,6 +53,9 @@ export default function TaskItem({
 
     const res = await fetch(`/api/groups/${groupId}/tasks/${task.id}`, {
       method: "DELETE",
+      headers: { 
+        "X-Socket-Id": socket.id ?? "",
+      },
     });
 
     if (!res.ok) {
