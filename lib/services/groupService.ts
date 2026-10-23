@@ -56,7 +56,6 @@ export async function deleteGroup(
     if (group.owner.id !== userId) {
         throw new ForbiddenError("You are not the owner of this group");
     }
-    return groupRepositories.remove(groupId);
-
-    emitGroup(groupId, "group : deleted", { groupId });
+    await groupRepositories.remove(groupId);
+    emitGroup(groupId, "group:deleted", { groupId });
 }

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import GroupCard from "@/components/GroupCard";
-import { getGroups } from "@/lib/data";
+import { getGroups } from "@/lib/services/groupService";
 
 export default async function GroupsPage() {
   const [groups, session] = await Promise.all([

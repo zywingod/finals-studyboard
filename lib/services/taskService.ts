@@ -19,7 +19,7 @@ export async function createTask(
   }
   const task = await taskRepository.create(groupId, title);
 
-  emitGroup(groupId, "task : created", excludedSocketId);
+  emitGroup(groupId, "task:created", task, excludedSocketId);
   return task;
 }
 
@@ -48,7 +48,7 @@ export async function updateTask(
     throw new NotFoundError("Task not found");
   }
   const updated = await taskRepository.update(groupId, taskId, updates);
-  emitGroup(groupId, "task : updated", updated, excludedSocketId);
+  emitGroup(groupId, "task:updated", updated, excludedSocketId);
   return updated;
 }
 
@@ -71,5 +71,5 @@ export async function deleteTask(
   }
 
   await taskRepository.remove(taskId);
-  emitGroup(groupId, "task : deleted", { taskId });
+  emitGroup(groupId, "task:deleted", { taskId });
 }
