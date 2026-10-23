@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { getGroupById, updateTask, deleteTask } from "@/lib/data";
+import * as taskService from "@/lib/services/taskService";
 import { updateTaskSchema } from "@/lib/validation";
 import { emitGroup } from "@/lib/socket";
+import { ForbiddenError, NotFoundError } from "@/lib/error";
 
 export async function PATCH(
   request: Request,
@@ -27,37 +28,24 @@ export async function PATCH(
     );
   }
 
-  const group = await getGroupById(params.id);
-
-  if (!group) {
-    return NextResponse.json(
-      { error: "Group not found" }, 
-      { status: 404 }
+  try{
+    const updated = await taskService.updateTask(
+      params.id, 
+      params.taskId, 
+      session.user.id, 
+      parsedResponse.data,
+      request.headers.get("x-socket-id")
     );
+    return NextResponse.json(updated);
+  }catch(error){
+  if(error instanceof NotFoundError){
+    return NextResponse.json({error: error.message}, {status: 404})
   }
-
-  if (group.ownerId !== session.user.id){
-    return NextResponse.json(
-      {error: "Only the owner can can modify this task"},
-      {status: 403}
-    );
-  } 
-
-
-  const updated = await updateTask(params.id, params.taskId, body);
-
-  if (!updated) {
-    return NextResponse.json({ error: "Task not found" }, { status: 404 });
+  if(error instanceof ForbiddenError){
+    return NextResponse.json({error: error.message}, {status: 403})
   }
-
-  emitGroup(
-    params.id,
-    "task:updated",
-    updated,
-    request.headers.get("x-socket-id")
-  )
-
-  return NextResponse.json(updated);
+  throw error;
+}
 }
 
 export async function DELETE(
@@ -73,29 +61,16 @@ export async function DELETE(
     );
   }
 
-  const group = await getGroupById(params.id);
-  if (!group) {
-    return NextResponse.json({ error: "Group not found" }, { status: 404 });
+  try {
+    await taskService.deleteTask(params.id, params.taskId, session.user.id);
+    return NextResponse.json({ message: "Task deleted"});
+  }catch(error){
+    if(error instanceof NotFoundError){
+    return NextResponse.json({error: error.message}, {status: 404})
+    }
+    if(error instanceof ForbiddenError){
+      return NextResponse.json({error: error.message}, {status: 403})
+    }
+    throw error;
   }
-
-  if (group.ownerId !== session.user.id){
-    return NextResponse.json(
-      {error: "Only the group owner can can delete this task"},
-      {status: 403}
-    );
-  }
-
-  const deleted = await deleteTask(params.id, params.taskId);
-
-  if (!deleted) {
-    return NextResponse.json({ error: "Task not found" }, { status: 404 });
-  }
-
-    emitGroup(
-      params.id,
-      "task:deleted",
-      request.headers.get("x-socket-id")
-    )
-
-  return NextResponse.json({ message: "Task deleted" });
-}
+}  

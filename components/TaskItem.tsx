@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Task } from "@/lib/data";
+import { Task } from "@/lib/repositories/taskRepository";
 import { socket } from "@/lib/socketClient";
 
 export default function TaskItem({

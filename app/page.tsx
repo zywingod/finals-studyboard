@@ -1,5 +1,5 @@
 import GroupCard from "@/components/GroupCard";
-import { getGroups } from "@/lib/data";
+import { getGroups } from "@/lib/services/groupService";
 
 // A Server Component — Server Components can be `async` and query the
 // database directly, no client-side fetching needed.

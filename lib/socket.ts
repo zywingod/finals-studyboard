@@ -9,12 +9,12 @@ export function emitGroup(
     groupId: string,
     event: string,
     payload: unknown,
-    excludeSocketId?: string | null
+    excludedSocketId?: string | null
 ): void {
     const io = getIO();
     if (!io) return;
 
     const room = `group:${groupId}`;
-    const target = excludeSocketId ? io.to(room).except(excludeSocketId) : io.to(room);
+    const target = excludedSocketId ? io.to(room).except(excludedSocketId) : io.to(room);
     target.emit(event, payload);
 }
