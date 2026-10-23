@@ -3,7 +3,7 @@ import {
   AIFeatureUnavailableError,
   generateSubtaskSuggestions } from "@/lib/ai";
 import { authOptions } from "@/lib/auth";
-import { getGroupById } from "@/lib/data";
+import { getGroupById } from "@/lib/services/groupService";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 import { z } from "zod";

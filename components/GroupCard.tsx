@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Group } from "@/lib/data";
+import { Group } from "@/lib/repositories/groupRepository";
 
 // Purely presentational, no interactivity -> stays a Server Component.
 export default function GroupCard({ group }: { group: Group }) {
